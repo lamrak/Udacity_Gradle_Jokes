@@ -17,3 +17,47 @@ allprojects {
         jcenter()
     }
 }
+
+
+task startServer(dependsOn: [":backend:appengineRun"]) {
+    evaluationDependsOn ":backend"
+
+    project(":backend") {
+        appengine {
+            daemon true
+        }
+    }
+    doLast {
+        println "Start Server Done"
+    }
+}
+
+task startAndroidTest(dependsOn: [":app:connectedAndroidTest"]) {
+    evaluationDependsOn ":app"
+
+    doLast {
+        println "Android test done"
+    }
+}
+
+task stopServer(dependsOn: [":backend:appengineStop"]) {
+    evaluationDependsOn ":backend"
+
+    doLast {
+        println "Stop Server"
+    }
+}
+
+startAndroidTest.dependsOn startServer
+stopServer.dependsOn startAndroidTest
+
+//project(':backend'){
+//    task setupGCE {
+//        dependsOn "appengineRun"
+//        dependsOn "app:makeTesting"
+//        dependsOn "appengineStop"
+//        doLast {
+//            println "*** run GCM server and tests ***"
+//        }
+//    }
+//}
